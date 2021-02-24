@@ -1,7 +1,7 @@
 // Canvas variables
 var canvas = document.getElementById("mycanvas");
 var ctx = canvas.getContext("2d");
-canvas.width = screen.width - 17;
+canvas.width = 1903;
 canvas.height = 3000;
 
 // Auxiliary drawing functions
