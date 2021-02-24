@@ -166,10 +166,11 @@ var page = 'geral';
 var bg_t1 = 0.1;
 var bg_t2 = 0.1;
 
-
 var gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
-addColor(gradient, 0, 130, 112, 219);
-addColor(gradient, 0.6, 0, 200, 201);
+//addColor(gradient, 0, 130, 112, 219);
+//addColor(gradient, 0.6, 0, 200, 201);
+addColor(gradient, 0,   40, 140, 201);
+addColor(gradient, 0.8, 100, 220, 201);
 
 loop = function(){
     frame++;

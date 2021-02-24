@@ -83,10 +83,10 @@ function Header(header_params) {
             if (lines_parametros[i][1] != ''){
                 font(13 + this.font_size[i], "poppins");
                 fill(150, 240, 255);
-                text(lines_parametros[i][1], x + 257 + width/2, y);
+                text(lines_parametros[i][1], x + 256 + width/2, y);
             }
         }
-        
+
         // RESULTADOS
         // variáveis
         var LLM = 8.06;
@@ -115,7 +115,7 @@ function Header(header_params) {
         // background
         fill(255, 255, 255, 0.08);
         rect(this.X2, this.Y, this.W, this.H);
-        
+
         // título
         fill(255, 255, 255, 0.08);
         rect(this.X2, this.Y, this.W, 70);
@@ -152,7 +152,7 @@ function Header(header_params) {
             if (lines_resultados[i][1] != '') {
                 font(13 + this.font_size2[i], "poppins");
                 fill(150, 240, 255);
-                text(lines_resultados[i][1], x + 257 + width/2, y);
+                text(lines_resultados[i][1], x + 256 + width/2, y);
             }
         }
     }
@@ -215,7 +215,6 @@ function Chart_BTCUSDT(btcusdt_params) {
                     this.collapsing = false;
                 }
             }
-
         } 
         if (!this.collapse) {
 
@@ -235,6 +234,17 @@ function Chart_BTCUSDT(btcusdt_params) {
 
                 this.graph_t = increment(this.graph_t, 0.03, 1);
             }
+        }
+        if (this.collapsing || frame == 1) {
+            evolucao_chart.Y = BTCUSDT_chart.Y + BTCUSDT_chart.H + 120 - 100;
+            distribuicao_chart.Y = BTCUSDT_chart.Y + BTCUSDT_chart.H + 120 - 100;
+            LL_relativo_mes_chart.Y = BTCUSDT_chart.Y + BTCUSDT_chart.H + 740 - 100;
+            LL_relativo_semana_chart.Y = BTCUSDT_chart.Y + BTCUSDT_chart.H + 740 - 100;
+
+            charts.evolucao.Y = evolucao_chart.Y;
+            charts.distribuicao.Y = distribuicao_chart.Y;
+            charts.LL_relativo_mes.Y = LL_relativo_mes_chart.Y;
+            charts.LL_relativo_semana.Y = LL_relativo_semana_chart.Y;
         }
 
         // Background
@@ -341,15 +351,8 @@ function relatorio_geral() {
     text('RELATÓRIO COMPLETO', 40 + 1820/2, BTCUSDT_chart.Y + BTCUSDT_chart.H + 70);
     */
 
-    evolucao_chart.Y = BTCUSDT_chart.Y + BTCUSDT_chart.H + 120 - 100;
     evolucao_chart.run();
-
-    distribuicao_chart.Y = BTCUSDT_chart.Y + BTCUSDT_chart.H + 120 - 100;
     distribuicao_chart.run();
-
-    LL_relativo_mes_chart.Y = BTCUSDT_chart.Y + BTCUSDT_chart.H + 740 - 100;
     LL_relativo_mes_chart.run();
-
-    LL_relativo_semana_chart.Y = BTCUSDT_chart.Y + BTCUSDT_chart.H + 740 - 100;
     LL_relativo_semana_chart.run();
 }
