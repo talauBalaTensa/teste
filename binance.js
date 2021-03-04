@@ -118,4 +118,3 @@ var get_candles_data = function(){
         update_last_price()
     }
 }
-
