@@ -9,7 +9,7 @@
             }
             @font-face {
                 font-family: poppins;
-                src: url("{{ url_for('static', filename = 'Poppins-Medium.ttf') }}");
+                src: url('/Poppins-Medium.ttf');
             }
         </style>
     </head>
@@ -17,13 +17,12 @@
     <body>
         <canvas id = "mycanvas" width = "1920" height = "1080"></canvas>
 
-        <script type = 'text/javascript'>var API_DATA_STRING = '{{API_DATA|tojson}}'</script>
-        <script type = 'text/javascript' src = "{{ url_for('static', filename = 'variables.js') }}"></script>
-        <script type = 'text/javascript' src = "{{ url_for('static', filename = 'functions.js') }}"></script>
-        <script type = 'text/javascript' src = "{{ url_for('static', filename = 'binance.js') }}"></script>
+        <script type = 'text/javascript' src = 'variables.js'></script>
+        <script type = 'text/javascript' src = 'functions.js'></script>
+        <script type = 'text/javascript' src = 'binance.js'></script>
 
-        <script type = 'text/javascript' src = "{{ url_for('static', filename = 'relatorio_geral.js') }}"></script>
+        <script type = 'text/javascript' src = 'relatorio_geral.js'></script>
         
-        <script type = 'text/javascript' src = "{{ url_for('static', filename = 'main.js') }}"></script>
+        <script type = 'text/javascript' src = 'main.js'></script>
     </body>
 </html>
