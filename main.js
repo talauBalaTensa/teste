@@ -212,7 +212,7 @@ function loop() {
             //console.log(API_DATA);
     
             //header = new Header(header_params);
-            BTCUSDT_chart = new Chart_BTCUSDT(btcusdt_params);
+            //BTCUSDT_chart = new Chart_BTCUSDT(btcusdt_params);
     
             //charts.evolucao.series[0].x_values = [0, 1, 2, 3, 4];
             //charts.evolucao.series[0].y_values = API_DATA.charts_series[0];
@@ -256,7 +256,7 @@ function loop() {
         text('RELATÓRIO OPERACIONAL', 950 + 900/2, 30 + 80/2);
 
         if (subpage == 'geral') {
-            relatorio_geral();
+            //relatorio_geral();
         }
 
         if (subpage == 'operacional') {
