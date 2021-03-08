@@ -192,7 +192,7 @@ function loop() {
 
         if (frame == 1){
 
-            var url = "https://api-bot-to-site.rj.r.appspot.com";
+            var url = "https://api-bot-to-site.rj.r.appspot.com/api";
             var data = 0;
 
             XMLRequest.onload = function() {
