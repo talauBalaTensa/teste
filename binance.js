@@ -63,7 +63,6 @@ var get_candles_data = function(){
     XMLRequest.send();
 
     var data = request_response;
-    console.log(data)
 
     // Checks if a candle has been consolidated
     open_time_check[0] = open_time_check[1];
