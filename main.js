@@ -203,13 +203,13 @@ function loop() {
 
             console.log(data)
 
-            for (var i = 0; i < API_DATA_STRING.length; i++){
-                if (i != 13 && i != API_DATA_STRING.length - 2){
-                    API_DATA += API_DATA_STRING[i];
-                }
-            }
-            API_DATA = JSON.parse(API_DATA).API_DATA;
-            console.log(API_DATA);
+            //for (var i = 0; i < API_DATA_STRING.length; i++){
+            //    if (i != 13 && i != API_DATA_STRING.length - 2){
+            //       API_DATA += API_DATA_STRING[i];
+            //    }
+            //}
+            //API_DATA = JSON.parse(API_DATA).API_DATA;
+            //console.log(API_DATA);
     
             //header = new Header(header_params);
             BTCUSDT_chart = new Chart_BTCUSDT(btcusdt_params);
