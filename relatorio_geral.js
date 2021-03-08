@@ -551,11 +551,11 @@ function Chart(params) {
 }
 
 function relatorio_geral() {
-    header.run();
+    //header.run();
     BTCUSDT_chart.run();
 
-    evolucao_chart.run();
-    distribuicao_chart.run();
+    //evolucao_chart.run();
+    //distribuicao_chart.run();
     //LL_relativo_mes_chart.run();
     //LL_relativo_semana_chart.run();
 }
