@@ -191,7 +191,18 @@ function loop() {
     if (page == 'relatorio') {
 
         if (frame == 1){
-    
+
+            var url = "https://api-bot-to-site.rj.r.appspot.com/api";
+            var data = 0;
+
+            XMLRequest.onload = function() {
+                data = JSON.parse(XMLRequest.responseText);
+            }
+            XMLRequest.open('GET', url);
+            XMLRequest.send();
+
+            console.log(data)
+
             for (var i = 0; i < API_DATA_STRING.length; i++){
                 if (i != 13 && i != API_DATA_STRING.length - 2){
                     API_DATA += API_DATA_STRING[i];
