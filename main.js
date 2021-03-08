@@ -196,7 +196,7 @@ function loop() {
             var data = 0;
 
             XMLRequest.onload = function() {
-                data = JSON.parse(XMLRequest.responseText);
+                data = XMLRequest.responseText;
             }
             XMLRequest.open('GET', url);
             XMLRequest.send();
