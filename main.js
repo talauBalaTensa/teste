@@ -35,21 +35,22 @@ var charts = {
 
         x_axis: {
             name: 'OPERAÇÃO',
-            font_size: 14,
+            font_size_legend: 14,
+            font_size_values: 14,
             interval_unit: 1,
             interval_tick: 1
         },
 
         y_axis: {
             name: 'BALANÇO ($)',
-            font_size: 14,
-            major_tick_mark: 'none'
+            font_size_legend: 12,
+            major_tick_mark: true
         },
 
         series: [
             {
                 type: 'line',
-                values: []
+                y_values: []
             }
         ],
     },
@@ -71,23 +72,25 @@ var charts = {
 
         x_axis: {
             name: 'LUCRO BRUTO (%)',
-            font_size: 14,
+            font_size_legend: 14,
+            font_size_values: 10,
             interval_unit: 1,
             interval_tick: 1
         },
 
         y_axis: {
             name: 'FREQUÊNCIA',
-            font_size: 14,
+            font_size_legend: 12,
             lowest: 0,
-            major_tick_mark: 'none',
+            major_tick_mark: false,
         },
 
         series: [
             {
                 type: 'bar',
                 width: 0.8,
-                values: []
+                x_values: [],
+                y_values: []
             }
         ],
     },
@@ -109,20 +112,24 @@ var charts = {
 
         x_axis: {
             name: 'MÊS',
-            font_size: 14,
+            font_size_legend: 14,
+            font_size_values: 14,
             interval_unit: 1,
             interval_tick: 1
         },
 
         y_axis: {
-            major_tick_mark: 'none'
+            lowest: 0,
+            font_size_legend: 12,
+            major_tick_mark: false
         },
 
         series: [
             {
                 type: 'bar',
                 width: 0.6,
-                values: []
+                x_values: [],
+                y_values: [],
             }
         ],  
     },
@@ -144,20 +151,24 @@ var charts = {
 
         x_axis: {
             name: 'SEMANA',
-            font_size: 14,
+            font_size_legend: 14,
+            font_size_values: 14,
             interval_unit: 1,
             interval_tick: 1
         },
 
         y_axis: {
-            major_tick_mark: 'none'
+            lowest: 0,
+            font_size_legend: 12,
+            major_tick_mark: false
         },
 
         series: [
             {
                 type: 'bar',
                 width: 0.6,
-                values: []
+                x_values: [],
+                y_values: []
             }
         ],  
     }
@@ -187,15 +198,16 @@ function loop() {
                 }
             }
             API_DATA = JSON.parse(API_DATA).API_DATA;
-        
-            console.log(API_DATA)
+            console.log(API_DATA);
     
             header = new Header(header_params);
             BTCUSDT_chart = new Chart_BTCUSDT(btcusdt_params);
     
-            charts.evolucao.series[0].values = API_DATA.charts_series[0]
-            charts.distribuicao.series[0].values = API_DATA.charts_series[1]
-    
+            charts.evolucao.series[0].x_values = [0, 1, 2, 3, 4];
+            charts.evolucao.series[0].y_values = API_DATA.charts_series[0];
+            charts.distribuicao.series[0].x_values = [-10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19];
+            charts.distribuicao.series[0].y_values = API_DATA.charts_series[1];
+            
             evolucao_chart = new Chart(charts.evolucao);
             distribuicao_chart = new Chart(charts.distribuicao);
             LL_relativo_mes_chart = new Chart(charts.LL_relativo_mes);

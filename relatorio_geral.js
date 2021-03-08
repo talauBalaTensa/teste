@@ -64,7 +64,7 @@ function Header(header_params) {
             rect(this.X1 + 20, this.Y + 80 + i*500/this.lines_parametros.length, this.W - 40, 500/this.lines_parametros.length - 2);
 
             var x = this.X1 + 40;
-            var y = this.Y + 80 + (500/this.lines_parametros.length)*i + 28;
+            var y = this.Y + 80 + i*500/this.lines_parametros.length + 28;
 
             fill(255, 255, 255);
             textAlign("right");
@@ -109,7 +109,7 @@ function Header(header_params) {
             rect(this.X2 + 20, this.Y + 80 + i*500/this.lines_resultados.length, this.W - 40, 500/this.lines_resultados.length - 2);
             
             var x = this.X2 + 40;
-            var y = this.Y + 80 + i*500/this.lines_resultados.length + 30;
+            var y = this.Y + 80 + i*500/this.lines_resultados.length + 32;
 
             fill(255, 255, 255);
             font(17, "poppins");
@@ -152,8 +152,6 @@ function Chart_BTCUSDT(btcusdt_params) {
     this.title = 'GRÁFICO BTCUSDT';
     this.price_stamps = 4;
     this.candle_width = 0.6;
-    this.highest_price = 0;
-    this.lowest_price = Number.MAX_SAFE_INTEGER;
     this.collapse = false;
     this.collapsing = false;
     this.graph_t = 1;
@@ -162,6 +160,9 @@ function Chart_BTCUSDT(btcusdt_params) {
  
     this.green_color = [56, 142, 60];
     this.red_color = [211, 47, 47];
+
+    this.first_candle = 100;
+    this.last_candle = candles;
 
     this.run = function() {
         
@@ -236,14 +237,29 @@ function Chart_BTCUSDT(btcusdt_params) {
     }
 
     this.display = function() {
-        this.first_candle = 0;
-        this.last_candle = candles;
-
-        if (frame == 1) {
+        
+        if (frame == 1 || frame % 1000 == 0) {
             get_candles_data();
         }
         
+        if (mouseIsPressed) {
+            if (mouseClicked) {
+                this.static_x = mouseX;
+                this.static_first_candle = this.first_candle;
+                this.static_last_candle = this.last_candle;
+            }
+            
+            var increment = Math.round((this.static_x - mouseX)/15);
+
+            if (this.static_first_candle + increment >= 0 && this.static_last_candle + increment <= candles) {
+                this.first_candle = this.static_first_candle + increment;
+                this.last_candle = this.static_last_candle + increment;
+            }
+        }
+
         // Defines highest and lowest price
+        this.highest_price = 0;
+        this.lowest_price = Number.MAX_SAFE_INTEGER;
         for (var i = this.first_candle; i < this.last_candle; i++) {
             if (candle[i][high] > this.highest_price) { this.highest_price = candle[i][high]; }
             if (candle[i][low] < this.lowest_price) { this.lowest_price = candle[i][low]; }
@@ -263,9 +279,9 @@ function Chart_BTCUSDT(btcusdt_params) {
             line(this.x, thisY, this.X + this.W - this.right_offset, thisY);
         }
 
-        if (isMouseOver(this.x, this.y - this.h, this.w, this.h, true)) {
-            var candleOnMouse = Math.floor((mouseX - this.x)*candles/this.w);
-            var xCandleOnMouse = Math.round(this.x + (candleOnMouse + 0.5)*this.w/candles);
+        if (isMouseOver(this.x, this.y - this.h, this.w, this.h, false)) {
+            var candleOnMouse = this.first_candle + Math.floor((mouseX - this.x)*(this.last_candle - this.first_candle)/this.w);
+            var xCandleOnMouse = Math.round(this.x + (candleOnMouse - this.first_candle + this.candle_width/2)*this.w/(this.last_candle - this.first_candle));
             var priceOnMouse = (this.lowest_price + ((this.y - mouseY)/this.h)*(this.highest_price - this.lowest_price)).toFixed(2);
 
             // Mouse lines
@@ -275,15 +291,20 @@ function Chart_BTCUSDT(btcusdt_params) {
             line(xCandleOnMouse, this.y - this.h, xCandleOnMouse, this.y);
 
             // Axis texts
+            var date = new Date(candle[candleOnMouse][0]);
+            var minutes = '0' + date.getMinutes();
+            var seconds = '0' + date.getSeconds();
+            var formated_date = date.getDay() + '/' + date.getMonth() + '/' + date.getFullYear() + '   ' + date.getHours() + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
+
             fill(0, 0, 0);
             text(priceOnMouse, this.X + this.W - this.right_offset/2, mouseY + 5);
-            text(candleOnMouse, xCandleOnMouse, this.y + 23);
+            text(formated_date, xCandleOnMouse, this.y + 23);
         }
 
         // Candles
         for (var i = this.first_candle; i < this.last_candle; i++) {
-            var X    = Math.round(this.x + (i - this.first_candle)*this.w/candles) + (1 - this.candle_width)*this.w/candles/2;
-            var W    = Math.round(this.candle_width*this.w/candles);
+            var W    = Math.round(this.candle_width*this.w/(this.last_candle - this.first_candle));
+            var X    = this.x + (i - this.first_candle)*this.w/(this.last_candle - this.first_candle);
             var H    =          (candle[i][open] - candle[i][close] )/(this.highest_price - this.lowest_price)*this.h;
             var Y    = this.y - (candle[i][open] - this.lowest_price)/(this.highest_price - this.lowest_price)*this.h;
             var HIGH = this.y - (candle[i][high] - this.lowest_price)/(this.highest_price - this.lowest_price)*this.h;
@@ -300,7 +321,7 @@ function Chart_BTCUSDT(btcusdt_params) {
 
             lineWidth(1 + 40/candles);
             rect(X, Y, W, H); //body
-            line(X + Math.round(W/2), HIGH, X + Math.round(W/2), LOW); //shadow
+            line(Math.round(X + W/2), HIGH, Math.round(X + W/2), LOW); //shadow
         }
     }
 }
@@ -324,27 +345,34 @@ function Chart(params) {
 
     this.x_axis = {
         name: params.x_axis.name,
-        font_size: params.x_axis.font_size,
+        font_size_legend: params.x_axis.font_size_legend,
+        font_size_values: params.x_axis.font_size_values,
         interval_unit: params.x_axis.interval_unit,
         interval_tick: params.x_axis.interval_tick,
-        
-        stamps: params.series[0].values.length
+
+        lowest: params.x_axis.lowest || Math.min(...params.series[0].x_values),
+        highest: Math.max(...params.series[0].x_values),
     };
 
     this.y_axis = {
         name: params.y_axis.name,
-        font_size: params.y_axis.font_size,
+        font_size_legend: params.y_axis.font_size_legend,
+        major_tick_mark: params.y_axis.major_tick_mark,
 
-        lowest: params.y_axis.lowest || Math.min(...params.series[0].values),
-        highest: Math.max(...params.series[0].values),
+        lowest: params.y_axis.lowest || Math.min(...params.series[0].y_values),
+        highest: Math.max(...params.series[0].y_values),
     };
 
     this.series = [
         {
             type: params.series[0].type,
-            values: params.series[0].values,
+            x_values: params.series[0].x_values,
+            y_values: params.series[0].y_values
         }
     ];
+
+    this.x_axis.stamps = this.series[0].x_values.length;
+    this.y_axis.stamps = 4;
 
     this.mouse_interactions = function() {
 
@@ -383,10 +411,8 @@ function Chart(params) {
         }
         this.x = this.X + this.left_offset;
         this.w = this.W - this.left_offset - this.right_offset;
-        this.y = this.Y + this.H - this.bot_offset - this.y_axis.lowest + this.y_axis.highest/(this.y_axis.highest - this.y_axis.lowest);
         this.h = this.H - this.top_offset - this.bot_offset;
 
-        this.y_axis.stamps = 4;
         if (this.y_axis.lowest < 0){
             this.bellow_0h = Math.abs(this.y_axis.lowest/(this.y_axis.highest - this.y_axis.lowest))*this.h;
             this.y_axis.stamps_bellow_0h = Math.floor(this.y_axis.stamps*Math.abs(div(this.y_axis.lowest, this.y_axis.highest)));
@@ -395,6 +421,7 @@ function Chart(params) {
             this.bellow_0h = 0;
             this.y_axis.stamps_bellow_0h = 0;
         }
+        this.y = this.Y + this.H - this.bot_offset - this.bellow_0h;
     }
 
     this.run = function() {
@@ -430,14 +457,16 @@ function Chart(params) {
         }
 
         // Data series
-        for (var i = 0; i < this.series[0].values.length; i++) {
+        font(12, "poppins");
+        for (var i = 0; i < this.series[0].y_values.length; i++) {
+
             if (this.series[0].type == 'line') {
-                var x = this.x + i*(this.w/(this.series[0].values.length - 1));
-                var y = this.y - this.h*(this.series[0].values[i] - this.y_axis.lowest)/(this.y_axis.highest - this.y_axis.lowest);
+                var x = this.x + i*(this.w/(this.series[0].y_values.length - 1));
+                var y = this.y - this.h*(this.series[0].y_values[i] - this.y_axis.lowest)/(this.y_axis.highest - this.y_axis.lowest);
                 
-                if (i < this.series[0].values.length - 1) {
-                    var next_x = this.x + (i + 1)*(this.w/(this.series[0].values.length - 1));
-                    var next_y = this.y - this.h*(this.series[0].values[i + 1] - this.y_axis.lowest)/(this.y_axis.highest - this.y_axis.lowest);
+                if (i < this.series[0].y_values.length - 1) {
+                    var next_x = this.x + (i + 1)*(this.w/(this.series[0].y_values.length - 1));
+                    var next_y = this.y - this.h*(this.series[0].y_values[i + 1] - this.y_axis.lowest)/(this.y_axis.highest - this.y_axis.lowest);
 
                     stroke(0, 0, 0);
                     line(x + 0.5, y - 0.5, next_x + 0.5, next_y - 0.5);
@@ -445,14 +474,28 @@ function Chart(params) {
             }
 
             if (this.series[0].type == 'bar') {
-                var w = 20;
-                var x = this.x + w/2 + i*((this.w - w)/(this.series[0].values.length - 1));
+                this.w_bar = this.w/this.series[0].y_values.length;
+                var x = this.x + this.w_bar/2 + i*((this.w - this.w_bar)/(this.series[0].y_values.length - 1));
                 var y = this.y - this.bellow_0h;
-                var h = this.series[0].values[i]/(this.y_axis.highest - this.y_axis.lowest)*this.h;
+                var h = this.series[0].y_values[i]/(this.y_axis.highest - this.y_axis.lowest)*this.h;
 
-                fill(40, 160, 246);
-                rect(x - w/2, y, 20, -h);
+                if (isMouseOver(x - this.w_bar/2, y - h, this.w_bar, h, false)) {
+                    fill(255, 255, 255, 0.5);
+                    rect(x - 40/2, y + 5, 40, 24);
+
+                    fill(255, 255, 255);
+                    text(this.series[0].y_values[i], x, y - h - 7);
+
+                    fill(40, 150, 246);
+
+
+                }
+                else {
+                    fill(40, 160, 246);
+                }
+                rect(x - this.w_bar/2, y, this.w_bar - 1, -h);
             }
+
         }
 
         lineWidth(1);
@@ -462,29 +505,28 @@ function Chart(params) {
         // Eixo x
         line(this.x, this.y - this.bellow_0h, this.x + this.w, this.y - this.bellow_0h);
         if (this.x_axis.name != undefined) {
-            font(this.x_axis.font_size, "poppins");
+            font(this.x_axis.font_size_legend, "poppins");
             text(this.x_axis.name, this.x + this.w/2, this.y + this.bot_offset/2 + 15);
         }
- 
-        for (var i = 0; i < this.x_axis.stamps; i++) {
+        font(this.x_axis.font_size_values, "poppins");
+        for (var i = 0; i <= this.x_axis.stamps; i++) {
             if (this.series[0].type == 'line') {
-                text(i, this.x + i*(this.w/(this.x_axis.stamps - 1)), this.y + 20);
+                text((this.x_axis.lowest + i*(this.x_axis.highest - this.x_axis.lowest)/this.x_axis.stamps).toFixed(1), this.x + i*(this.w/this.x_axis.stamps), this.y + 20);
             }
             if (this.series[0].type == 'bar') {
-                text(i, this.x + 20/2 + i*((this.w - 20)/(this.x_axis.stamps - 1)), this.y - this.bellow_0h + 20);
+                text((this.x_axis.lowest + i*(this.x_axis.highest - this.x_axis.lowest)/(this.x_axis.stamps - 1)).toFixed(0), this.x + this.w_bar/2 + i*(this.w - this.w_bar)/this.x_axis.stamps, this.y - this.bellow_0h + 20);
             }
         }
 
         // Eixo y
         line(this.x, this.y, this.x, this.y - this.h);
         if (this.y_axis.name != undefined) {
-            font(this.y_axis.font_size, "poppins");
+            font(this.y_axis.font_size_legend, "poppins");
             ctx.save();
             ctx.rotate(-90*Math.PI/180);
             text(this.y_axis.name, -(this.y - this.h/2), this.x - this.left_offset/2 - 10);
             ctx.restore();
         }
-
         textAlign('right');
         stroke(255, 255, 255, 0.5);
         // above x axis
@@ -492,15 +534,18 @@ function Chart(params) {
             var stamp_space = (this.h - this.bellow_0h)/this.y_axis.stamps;
 
             text((this.y_axis.lowest + i*(this.y_axis.highest - this.y_axis.lowest)/this.y_axis.stamps).toFixed(1), this.x - 10, this.y - this.bellow_0h - i*stamp_space + 4);
-            line(this.x, this.y - this.bellow_0h - i*stamp_space + 4, this.x + this.w, this.y - this.bellow_0h - i*stamp_space + 4);
+            if (this.y_axis.major_tick_mark) {
+                line(this.x, this.y - this.bellow_0h - i*stamp_space, this.x + this.w, this.y - this.bellow_0h - i*stamp_space);
+            }
         }
-
         // bellow x axis
         for(var i = 0; i <= this.y_axis.stamps_bellow_0h; i++){
             var stamp_space = this.bellow_0h/this.y_axis.stamps_bellow_0h;
 
             text((i*this.y_axis.lowest/this.y_axis.stamps_bellow_0h).toFixed(1), this.x - 10, this.y - this.bellow_0h + i*stamp_space + 4);
-            line(this.x, this.y - this.bellow_0h - i*stamp_space + 4, this.x + this.w, this.y - this.bellow_0h - i*stamp_space + 4);
+            if (this.y_axis.major_tick_mark) {
+                line(this.x, this.y - this.bellow_0h - i*stamp_space + 4, this.x + this.w, this.y - this.bellow_0h - i*stamp_space + 4);
+            }
         }
     }
 }
