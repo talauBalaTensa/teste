@@ -212,10 +212,10 @@ function Chart_BTCUSDT(btcusdt_params) {
             }
         }
         if (this.collapsing || frame == 1) {
-            evolucao_chart.Y = BTCUSDT_chart.Y + BTCUSDT_chart.H + 120 - 100;
-            distribuicao_chart.Y = BTCUSDT_chart.Y + BTCUSDT_chart.H + 120 - 100;
-            LL_relativo_mes_chart.Y = BTCUSDT_chart.Y + BTCUSDT_chart.H + 740 - 100;
-            LL_relativo_semana_chart.Y = BTCUSDT_chart.Y + BTCUSDT_chart.H + 740 - 100;
+            //evolucao_chart.Y = BTCUSDT_chart.Y + BTCUSDT_chart.H + 120 - 100;
+            //distribuicao_chart.Y = BTCUSDT_chart.Y + BTCUSDT_chart.H + 120 - 100;
+            //LL_relativo_mes_chart.Y = BTCUSDT_chart.Y + BTCUSDT_chart.H + 740 - 100;
+            //LL_relativo_semana_chart.Y = BTCUSDT_chart.Y + BTCUSDT_chart.H + 740 - 100;
 
             charts.evolucao.Y = evolucao_chart.Y;
             charts.distribuicao.Y = distribuicao_chart.Y;
